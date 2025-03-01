@@ -1,0 +1,21 @@
+.header__nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px;
+}
+
+.header__logo {
+padding: 10px 20px;
+
+background: linear-gradient(to left, #FF8628, #F6089A, #283CA6, #102243);
+background-clip: text;
+-webkit-background-clip: text;
+-moz-background-clip: text;
+
+color: transparent;
+font-weight: 700;
+font-size: 25px;
+font-family: var(--roboto);
+cursor: default;
+}

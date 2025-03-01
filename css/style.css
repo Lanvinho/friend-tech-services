@@ -1,0 +1,200 @@
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff; /* Blanc */
+    color: #333; /* Texte sombre pour contraste */
+}
+
+header {
+    background: linear-gradient(90deg, #007BFF, #0056b3); /* Dégradé de bleu */
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+}
+
+.menu-button {
+    background-color: #FF4500; /* Orange */
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.menu-button:hover {
+    background-color: #FF6347; /* Orange plus clair au survol */
+}
+
+.header-right {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.header-right a {
+    background-color: #007BFF; /* Bleu */
+    color: #fff;
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+}
+
+.header-right a:hover {
+    background-color: #0056b3; /* Bleu plus foncé au survol */
+}
+
+.cart-icon {
+    background-color: #FF4500; /* Orange */
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+}
+
+.cart-icon:hover {
+    background-color: #FF6347; /* Orange plus clair au survol */
+}
+
+.cart-icon i {
+    font-size: 1.2em;
+}
+
+.sidebar {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: -250px;
+    background-color: #007BFF; /* Bleu */
+    overflow-x: hidden;
+    transition: left 0.3s ease;
+    padding-top: 60px;
+    z-index: 999;
+}
+
+.sidebar.open {
+    left: 0;
+}
+
+.sidebar a {
+    padding: 10px 15px;
+    text-decoration: none;
+    font-size: 1.1em;
+    color: #fff;
+    display: block;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar a:hover {
+    background-color: #0056b3; /* Bleu plus foncé au survol */
+}
+
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+}
+
+.overlay.active {
+    display: block;
+}
+
+.container {
+    width: 90%;
+    margin: 20px auto;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.product {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 30%;
+    text-align: center;
+    border: 1px solid #ddd; /* Bordure légère */
+}
+
+.product img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+    width: 200px;
+    height: 150px;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.product img:hover {
+    transform: scale(1.1);
+}
+
+.product h2 {
+    margin-top: 10px;
+    font-size: 1.2em;
+    color: #007BFF; /* Bleu pour les titres */
+}
+
+.product p {
+    line-height: 1.6;
+    font-size: 0.9em;
+    color: #333; /* Texte sombre */
+}
+
+.whatsapp-button {
+    display: inline-block;
+    background-color: #28a745; /* Vert pour WhatsApp */
+    color: #fff;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 10px;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease;
+}
+
+.whatsapp-button:hover {
+    background-color: #218838; /* Vert plus foncé au survol */
+}
+
+@media (max-width: 768px) {
+    .header-right {
+        flex-direction: column;
+        gap: 5px;
+    }
+    .header-right a {
+        padding: 8px 10px;
+        font-size: 0.8em;
+    }
+    .cart-icon {
+        padding: 8px;
+    }
+}

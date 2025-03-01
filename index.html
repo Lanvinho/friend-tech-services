@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FPS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Styles globaux */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #007BFF;
+            margin-top: 20px;
+        }
+
+        /* Styles pour le bouton de menu */
+        .menu-button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .menu-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Styles pour la barre latérale */
+        .sidebar {
+            height: 100%;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: -250px;
+            background-color: #007BFF;
+            overflow-x: hidden;
+            transition: left 0.3s ease;
+            padding-top: 60px;
+            z-index: 1000;
+        }
+
+        .sidebar.open {
+            left: 0;
+        }
+
+        .sidebar a {
+            padding: 10px 15px;
+            text-decoration: none;
+            font-size: 1.1em;
+            color: #fff;
+            display: block;
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar a:hover {
+            background-color: #0056b3;
+        }
+
+        /* Overlay pour fermer la barre latérale */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        /* Styles pour la barre de recherche et le bouton de connexion */
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+        }
+
+        .login-button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-button:hover {
+            background-color: #0056b3;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .search-bar input {
+            width: 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            transition: width 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .search-bar input.active {
+            width: 200px;
+            opacity: 1;
+        }
+
+        .search-bar button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-bar button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Styles pour le menu des catégories */
+        .category-menu {
+            background-color: #007BFF;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .category-menu ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .category-menu ul li {
+            position: relative;
+        }
+
+        .category-menu ul li a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 15px;
+            display: block;
+            transition: background-color 0.3s ease;
+        }
+
+        .category-menu ul li a:hover {
+            background-color: #0056b3;
+        }
+
+        .category-menu ul li .submenu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #007BFF;
+            padding: 10px;
+            z-index: 1000;
+        }
+
+        .category-menu ul li:hover .submenu {
+            display: block;
+        }
+
+        .category-menu ul li .submenu li {
+            margin: 0;
+        }
+
+        .category-menu ul li .submenu li a {
+            white-space: nowrap;
+        }
+
+        /* Styles pour le contenu principal */
+        .container {
+            width: 90%;
+            margin: 80px auto 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .row {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .scrollable {
+            display: flex;
+            overflow-x: hidden; /* Masquer la barre de défilement */
+            gap: 15px;
+            padding: 10px;
+            position: relative;
+        }
+
+        /* Centrer les promotions */
+        #promos-container {
+            display: flex;
+            justify-content: center; /* Centrer les articles horizontalement */
+            gap: 15px;
+            padding: 10px;
+            position: relative;
+            width: 100%;
+        }
+
+        .product, .accessoire, .promo {
+            flex: 0 0 auto;
+            width: 150px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            position: relative; /* Ajouté pour positionner correctement le logo d'œil */
+        }
+
+        .product:hover, .accessoire:hover, .promo:hover {
+            transform: scale(1.1);
+        }
+
+        .product img, .accessoire img, .promo img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .product:hover img, .accessoire:hover img, .promo:hover img {
+            transform: scale(1.2);
+        }
+
+        .product h3, .accessoire h3, .promo h3 {
+            margin: 10px 0;
+            font-size: 0.9em;
+            color: #007BFF;
+        }
+
+        .product p, .accessoire p, .promo p {
+            margin: 5px 0;
+            font-size: 0.8em;
+            color: #555;
+        }
+
+        .price {
+            font-weight: bold;
+            font-size: 0.9em;
+            color: #28a745;
+            margin-bottom: 10px; /* Espace sous le prix */
+        }
+
+        .promo .price {
+            color: #ff0000; /* Rouge pour les promotions */
+        }
+
+        .promo .price del {
+            color: #888;
+            margin-right: 5px;
+        }
+
+        /* Styles pour le conteneur des icônes (WhatsApp et œil) */
+        .icon-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px; /* Espace entre les icônes */
+        }
+
+        /* Styles pour le logo WhatsApp */
+        .whatsapp-button {
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            display: inline-block;
+            padding: 0;
+        }
+
+        .whatsapp-button i {
+            font-size: 20px;
+            color: #25D366; /* Couleur WhatsApp */
+            transition: transform 0.3s ease;
+        }
+
+        .whatsapp-button:hover i {
+            transform: scale(1.2); /* Effet de zoom au survol */
+        }
+
+        /* Styles pour le logo d'œil */
+        .eye-icon {
+            background-color: rgba(255, 255, 255, 0.8); /* Fond semi-transparent */
+            border-radius: 50%; /* Forme ronde */
+            padding: 5px;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .eye-icon:hover {
+            opacity: 0.8; /* Effet de survol */
+        }
+
+        .eye-icon i {
+            font-size: 16px;
+            color: #007BFF; /* Couleur de l'icône */
+        }
+
+        /* Styles pour la fenêtre modale */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        footer {
+            background-color: #007BFF;
+            color: #fff;
+            text-align: center;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        footer a {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        /* Styles pour les flèches de navigation */
+        .navigation-arrows {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        .navigation-arrows button {
+            background-color: rgba(0, 123, 255, 0.8);
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            pointer-events: all;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .navigation-arrows button:hover {
+            background-color: rgba(0, 86, 179, 0.8);
+        }
+
+        .navigation-arrows button i {
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <!-- En-tête -->
+    <header>
+        <div class="header-left">
+            <button class="menu-button" onclick="toggleSidebar()">☰ Menu</button>
+            <h1><a href="index.html" style="color: inherit; text-decoration: none;">FPS - ACCEUIL</a></h1>
+        </div>
+        <div class="header-right">
+            <!-- Bouton de connexion -->
+            <button class="login-button" onclick="toggleLoginSidebar()">
+                <i class="fas fa-user"></i>
+            </button>
+            <!-- Barre de recherche -->
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Rechercher un article...">
+                <button onclick="toggleSearchBar()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Menu des catégories -->
+    <nav class="category-menu">
+        <ul>
+            <li><a href="#" onclick="filterByCategory('TOUT')">TOUT</a></li>
+            <li><a href="#" onclick="filterByCategory('LAPTOP')">LAPTOP</a></li>
+            <li><a href="#" onclick="filterByCategory('DESKTOP')">DESKTOP</a></li>
+            <li>
+                <a href="#">MARQUE</a>
+                <ul class="submenu">
+                    <li><a href="#" onclick="filterByBrand('HP')">HP</a></li>
+                    <li><a href="#" onclick="filterByBrand('DELL')">DELL</a></li>
+                    <li><a href="#" onclick="filterByBrand('LENOVO')">LENOVO</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">ACCESSOIRE</a>
+                <ul class="submenu">
+                    <li><a href="#" onclick="filterByAccessory('Clavier')">Clavier</a></li>
+                    <li><a href="#" onclick="filterByAccessory('Souris')">Souris</a></li>
+                    <li><a href="#" onclick="filterByAccessory('ECRAN')">ECRAN</a></li>
+                    <li><a href="#" onclick="filterByAccessory('Cle USB')">Cle USB</a></li>
+                    <li><a href="#" onclick="filterByAccessory('Disque Dur')">Disque Dur</a></li>
+                    <li><a href="#" onclick="filterByAccessory('Chargeur')">Chargeur</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Barre latérale principale -->
+    <aside class="sidebar" id="sidebar">
+        <a href="index.html">Accueil</a>
+        <a href="Ordinateur.html">Ordinateurs</a>
+        <a href="accessoires.html">Accessoires</a>
+        <a href="service.html">Service</a>
+        <a href="contact.html">Contact</a>
+    </aside>
+
+    <!-- Overlay pour fermer la barre latérale -->
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Contenu principal -->
+    <div class="container">
+        <!-- Ligne des promotions -->
+        <div class="row">
+            <h2>Promotions</h2>
+            <div class="scrollable" id="promos-container">
+                <!-- Les promotions seront injectées ici par JavaScript -->
+            </div>
+            <div class="navigation-arrows">
+                <button onclick="scrollPromos('left')"><i class="fas fa-chevron-left"></i></button>
+                <button onclick="scrollPromos('right')"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+
+        <!-- Ligne des produits -->
+        <div class="row">
+            <h2>ORDINATEURS</h2>
+            <div class="scrollable" id="produits-container">
+                <!-- Les produits seront injectés ici par JavaScript -->
+            </div>
+            <div class="navigation-arrows">
+                <button onclick="scrollProducts('left')"><i class="fas fa-chevron-left"></i></button>
+                <button onclick="scrollProducts('right')"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+
+        <!-- Ligne des accessoires -->
+        <div class="row">
+            <h2>Accessoires</h2>
+            <div class="scrollable" id="accessoires-container">
+                <!-- Les accessoires seront injectés ici par JavaScript -->
+            </div>
+            <div class="navigation-arrows">
+                <button onclick="scrollAccessories('left')"><i class="fas fa-chevron-left"></i></button>
+                <button onclick="scrollAccessories('right')"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fenêtre modale pour afficher l'image en grand -->
+    <div class="modal" id="image-modal">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <img id="modal-image" src="" alt="Image en grand">
+    </div>
+
+    <!-- Pied de page -->
+    <footer>
+        <p>&copy; 2023 FPS - Tous droits réservés.</p>
+        <p><a href="#">Mentions légales</a></p>
+    </footer>
+
+    <script>
+        // Fonction pour ouvrir/fermer la barre latérale principale
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const overlay = document.getElementById("overlay");
+            sidebar.classList.toggle("open");
+            overlay.classList.toggle("active");
+        }
+
+        // Fonction pour afficher/masquer la barre de recherche
+        function toggleSearchBar() {
+            const searchInput = document.getElementById('search-input');
+            searchInput.classList.toggle('active');
+
+            if (searchInput.classList.contains('active')) {
+                searchInput.focus(); // Focus sur la barre de recherche si elle est active
+            } else {
+                searchInput.value = ''; // Effacer le contenu de la barre de recherche
+                afficherProduits(window.produits); // Réafficher tous les produits
+                afficherAccessoires(window.accessoires); // Réafficher tous les accessoires
+                afficherPromos(window.promos); // Réafficher toutes les promotions
+            }
+        }
+
+        // Fonction pour filtrer les produits par catégorie
+        function filterByCategory(category) {
+            if (category === 'TOUT') {
+                afficherProduits(window.produits);
+                afficherAccessoires(window.accessoires);
+                afficherPromos(window.promos);
+            } else {
+                const produitsFiltres = window.produits.filter(produit => produit.CATEGORIE === category);
+                afficherProduits(produitsFiltres);
+            }
+        }
+
+        // Fonction pour filtrer les produits par marque
+        function filterByBrand(brand) {
+            const produitsFiltres = window.produits.filter(produit => produit.MODELE.includes(brand));
+            afficherProduits(produitsFiltres);
+        }
+
+        // Fonction pour filtrer les accessoires par type
+        function filterByAccessory(type) {
+            const accessoiresFiltres = window.accessoires.filter(accessoire => accessoire.CATEGORIE === type);
+            afficherAccessoires(accessoiresFiltres);
+        }
+
+        // Fonction pour filtrer les produits, accessoires et promotions par recherche
+        function filterArticles(searchTerm) {
+            const searchTermLower = searchTerm.toLowerCase();
+
+            // Filtrer les produits
+            const produitsFiltres = window.produits.filter(produit =>
+                produit.MODELE.toLowerCase().includes(searchTermLower) ||
+                produit.DESCRIPTION.toLowerCase().includes(searchTermLower)
+            );
+
+            // Filtrer les accessoires
+            const accessoiresFiltres = window.accessoires.filter(accessoire =>
+                accessoire.MODELE.toLowerCase().includes(searchTermLower) ||
+                accessoire.DESCRIPTION.toLowerCase().includes(searchTermLower)
+            );
+
+            // Filtrer les promotions
+            const promosFiltres = window.promos.filter(promo =>
+                promo.MODELE.toLowerCase().includes(searchTermLower) ||
+                promo.DESCRIPTION.toLowerCase().includes(searchTermLower)
+            );
+
+            // Afficher les résultats filtrés
+            afficherProduits(produitsFiltres);
+            afficherAccessoires(accessoiresFiltres);
+            afficherPromos(promosFiltres);
+        }
+
+        // Fonction pour récupérer les produits depuis l'API PHP
+        async function fetchProduits() {
+            try {
+                const response = await fetch('api.php?action=produit');
+                const produits = await response.json();
+                console.log('Produits récupérés :', produits);
+
+                // Stocker les produits dans une variable globale
+                window.produits = produits;
+
+                // Afficher tous les produits au chargement de la page
+                afficherProduits(produits);
+            } catch (error) {
+                console.error('Erreur lors de la récupération des produits :', error);
+            }
+        }
+
+        // Fonction pour récupérer les accessoires depuis l'API PHP
+        async function fetchAccessoires() {
+            try {
+                const response = await fetch('api.php?action=accessoires');
+                const accessoires = await response.json();
+                console.log('Accessoires récupérés :', accessoires);
+
+                // Stocker les accessoires dans une variable globale
+                window.accessoires = accessoires;
+
+                // Afficher tous les accessoires au chargement de la page
+                afficherAccessoires(accessoires);
+            } catch (error) {
+                console.error('Erreur lors de la récupération des accessoires :', error);
+            }
+        }
+
+        // Fonction pour récupérer les promotions depuis l'API PHP
+        async function fetchPromos() {
+            try {
+                const response = await fetch('api.php?action=promo');
+                const promos = await response.json();
+                console.log('Promotions récupérées :', promos);
+
+                // Stocker les promotions dans une variable globale
+                window.promos = promos;
+
+                // Afficher toutes les promotions au chargement de la page
+                afficherPromos(promos);
+            } catch (error) {
+                console.error('Erreur lors de la récupération des promotions :', error);
+            }
+        }
+
+        // Fonction pour afficher les produits
+        function afficherProduits(produits) {
+            const container = document.getElementById('produits-container');
+            container.innerHTML = "";
+
+            if (produits.length === 0) {
+                container.innerHTML = `<p style="text-align: center; color: #888;">Aucun produit trouvé.</p>`;
+                return;
+            }
+
+            produits.forEach(produit => {
+                const produitHTML = `
+                    <div class="product">
+                        <a href="${produit.MODELE}.html" style="text-decoration: none; color: inherit;">
+                            <img src="Asset/${produit.MODELE}.jpg" alt="${produit.MODELE}">
+                            <h3>${produit.MODELE}</h3>
+                            <p>${produit.DESCRIPTION}</p>
+                            <div class="price">Prix : ${produit.PRIX} FCFA</div>
+                            <div class="icon-container">
+                                <a href="#" class="whatsapp-button" data-name="${produit.MODELE}" data-description="${produit.DESCRIPTION}" data-price="${produit.PRIX} FCFA">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
+                                <div class="eye-icon" onclick="openModal('Asset/${produit.MODELE}.jpg', event)">
+                                    <i class="fas fa-eye"></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', produitHTML);
+            });
+
+            // Ajouter les événements WhatsApp
+            document.querySelectorAll('.whatsapp-button').forEach(button => {
+                const name = button.getAttribute('data-name');
+                const description = button.getAttribute('data-description');
+                const price = button.getAttribute('data-price');
+                const message = `Je suis intéressé par le produit suivant :\n\n*Nom :* ${name}\n*Description :* ${description}\n*Prix :* ${price}`;
+                const encodedMessage = encodeURIComponent(message);
+                const whatsappLink = `https://wa.me/+237678378219?text=${encodedMessage}`;
+                button.setAttribute('href', whatsappLink);
+            });
+        }
+
+        // Fonction pour afficher les accessoires
+        function afficherAccessoires(accessoires) {
+            const container = document.getElementById('accessoires-container');
+            container.innerHTML = "";
+
+            if (accessoires.length === 0) {
+                container.innerHTML = `<p style="text-align: center; color: #888;">Aucun accessoire trouvé.</p>`;
+                return;
+            }
+
+            accessoires.forEach(accessoire => {
+                const accessoireHTML = `
+                    <div class="accessoire">
+                        <a href="${accessoire.MODELE}.html" style="text-decoration: none; color: inherit;">
+                            <img src="Asset/${accessoire.MODELE}.jpg" alt="${accessoire.MODELE}">
+                            <h3>${accessoire.MODELE}</h3>
+                            <p>${accessoire.DESCRIPTION}</p>
+                            <div class="price">Prix : ${accessoire.PRIX} FCFA</div>
+                            <div class="icon-container">
+                                <a href="#" class="whatsapp-button" data-name="${accessoire.MODELE}" data-description="${accessoire.DESCRIPTION}" data-price="${accessoire.PRIX} FCFA">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
+                                <div class="eye-icon" onclick="openModal('Asset/${accessoire.MODELE}.jpg', event)">
+                                    <i class="fas fa-eye"></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', accessoireHTML);
+            });
+
+            // Ajouter les événements WhatsApp
+            document.querySelectorAll('.whatsapp-button').forEach(button => {
+                const name = button.getAttribute('data-name');
+                const description = button.getAttribute('data-description');
+                const price = button.getAttribute('data-price');
+                const message = `Je suis intéressé par l'accessoire suivant :\n\n*Nom :* ${name}\n*Description :* ${description}\n*Prix :* ${price}`;
+                const encodedMessage = encodeURIComponent(message);
+                const whatsappLink = `https://wa.me/+237678378219?text=${encodedMessage}`;
+                button.setAttribute('href', whatsappLink);
+            });
+        }
+
+        // Fonction pour afficher les promotions
+        function afficherPromos(promos) {
+            const container = document.getElementById('promos-container');
+            container.innerHTML = "";
+
+            if (promos.length === 0) {
+                container.innerHTML = `<p style="text-align: center; color: #888;">Aucune promotion trouvée.</p>`;
+                return;
+            }
+
+            promos.forEach(promo => {
+                const promoHTML = `
+                    <div class="promo">
+                        <a href="${promo.MODELE}.html" style="text-decoration: none; color: inherit;">
+                            <img src="Asset/${promo.MODELE}.jpg" alt="${promo.MODELE}">
+                            <h3>${promo.MODELE}</h3>
+                            <p>${promo.DESCRIPTION}</p>
+                            <div class="price">Prix : <del>${promo.PRIX} FCFA</del> ${promo.PRIXPROMO} FCFA</div>
+                            <div class="icon-container">
+                                <a href="#" class="whatsapp-button" data-name="${promo.MODELE}" data-description="${promo.DESCRIPTION}" data-price="${promo.PRIXPROMO} FCFA">
+                                    <i class="fab fa-whatsapp"></i>
+                                </a>
+                                <div class="eye-icon" onclick="openModal('Asset/${promo.MODELE}.jpg', event)">
+                                    <i class="fas fa-eye"></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', promoHTML);
+            });
+
+            // Ajouter les événements WhatsApp
+            document.querySelectorAll('.whatsapp-button').forEach(button => {
+                const name = button.getAttribute('data-name');
+                const description = button.getAttribute('data-description');
+                const price = button.getAttribute('data-price');
+                const message = `Je suis intéressé par la promotion suivante :\n\n*Nom :* ${name}\n*Description :* ${description}\n*Prix :* ${price}`;
+                const encodedMessage = encodeURIComponent(message);
+                const whatsappLink = `https://wa.me/+237678378219?text=${encodedMessage}`;
+                button.setAttribute('href', whatsappLink);
+            });
+        }
+
+        // Fonction pour ouvrir la fenêtre modale avec l'image en grand
+        function openModal(imageSrc, event) {
+            event.stopPropagation(); // Empêcher la propagation de l'événement de clic
+            const modal = document.getElementById('image-modal');
+            const modalImage = document.getElementById('modal-image');
+            modalImage.src = imageSrc;
+            modal.style.display = 'flex';
+        }
+
+        // Fonction pour fermer la fenêtre modale
+        function closeModal() {
+            const modal = document.getElementById('image-modal');
+            modal.style.display = 'none';
+        }
+
+        // Fonction pour faire défiler les produits
+        function scrollProducts(direction) {
+            const container = document.getElementById('produits-container');
+            const scrollAmount = 200; // Ajustez cette valeur pour contrôler la distance de défilement
+
+            if (direction === 'left') {
+                container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            } else if (direction === 'right') {
+                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
+        }
+
+        // Fonction pour faire défiler les accessoires
+        function scrollAccessories(direction) {
+            const container = document.getElementById('accessoires-container');
+            const scrollAmount = 200; // Ajustez cette valeur pour contrôler la distance de défilement
+
+            if (direction === 'left') {
+                container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            } else if (direction === 'right') {
+                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
+        }
+
+        // Fonction pour faire défiler les promotions
+        function scrollPromos(direction) {
+            const container = document.getElementById('promos-container');
+            const scrollAmount = 200; // Ajustez cette valeur pour contrôler la distance de défilement
+
+            if (direction === 'left') {
+                container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            } else if (direction === 'right') {
+                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
+        }
+
+        // Ajouter un écouteur d'événements sur la barre de recherche
+        document.getElementById('search-input').addEventListener('input', function (e) {
+            const searchTerm = e.target.value.trim(); // Récupérer le terme de recherche
+            filterArticles(searchTerm); // Filtrer les articles
+        });
+
+        // Appeler les fonctions pour charger les données au chargement de la page
+        fetchProduits();
+        fetchAccessoires();
+        fetchPromos();
+    </script>
+</body>
+</html>
