@@ -1,11 +1,14 @@
 // server.cjs
 const express = require('express');
+const path = require('path');
+
 const app = express();
 
-app.get('/', (req, res) => {
-  res.send('Bonjour, monde !');
-});
+// Définir le dossier "public" comme dossier statique
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.listen(10000, () => {
-  console.log('Serveur démarré sur le port 10000');
+// Démarrer le serveur
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => {
+  console.log(`Serveur démarré sur le port ${PORT}`);
 });
