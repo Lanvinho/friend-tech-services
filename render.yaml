@@ -2,5 +2,5 @@ services:
   - type: web
     name: votre-service
     env: node
-    buildCommand: npm install
-    startCommand: node server.cjs
+    buildCommand: npm run build
+    startCommand: npm run start
