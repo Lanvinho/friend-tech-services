@@ -1,16 +1,11 @@
 {
-  "name": "projet",
-  "private": true,
+  "name": "votre-projet",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview --port 10000"
-  },
-  "devDependencies": {
-    "vite": "^6.2.0"
+    "start": "vite preview --port 10000"
   },
   "dependencies": {
-    "express": "^4.21.2"
+    "vite": "^4.5.9"
   }
 }
