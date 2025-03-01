@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: votre-service
+    env: php
+    buildCommand: ""  # Pas besoin de build pour PHP
+    startCommand: php -S 0.0.0.0:10000
