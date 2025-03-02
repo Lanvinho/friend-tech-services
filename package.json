@@ -5,7 +5,7 @@
     "build": "npx vite build",
     "start": "npx vite preview --port 10000"
   },
-  "dependencies": {
-    "vite": "^4.0.0"
+  "devDependencies": {
+    "vite": "^6.2.0"
   }
 }
