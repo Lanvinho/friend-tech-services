@@ -1,0 +1,303 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    color: #007BFF;
+    margin-top: 20px;
+}
+
+/* Styles pour le bouton de menu */
+.menu-button {
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    font-size: 1em;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.menu-button:hover {
+    background-color: #0056b3;
+}
+
+/* Styles pour la barre latérale */
+.sidebar {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: -250px; /* Cachée par défaut */
+    background-color: #007BFF;
+    overflow-x: hidden;
+    transition: left 0.3s ease;
+    padding-top: 60px;
+    z-index: 1000;
+}
+
+.sidebar.open {
+    left: 0; /* Afficher la barre latérale */
+}
+
+.sidebar a {
+    padding: 10px 15px;
+    text-decoration: none;
+    font-size: 1.1em;
+    color: #fff;
+    display: block;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar a:hover {
+    background-color: #0056b3;
+}
+
+/* Overlay pour fermer la barre latérale */
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.overlay.active {
+    display: block;
+}
+
+/* Styles pour la barre de recherche et le bouton de connexion */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espace entre les éléments */
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1001;
+}
+
+.login-button {
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-button:hover {
+    background-color: #0056b3;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espace entre les éléments */
+}
+
+.search-bar input {
+    width: 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+    transition: width 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+}
+
+.search-bar input.active {
+    width: 200px; /* Largeur de la barre de recherche */
+    opacity: 1;
+}
+
+.search-bar button {
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.search-bar button:hover {
+    background-color: #0056b3;
+}
+
+/* Styles pour le contenu principal */
+.container {
+    width: 90%;
+    margin: 80px auto 20px; /* Ajustement pour éviter le chevauchement avec le header */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+}
+
+.row {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.scrollable {
+    display: flex;
+    overflow-x: auto;
+    gap: 15px;
+    padding: 10px;
+}
+
+.product, .accessoire {
+    flex: 0 0 auto;
+    width: 150px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.product:hover, .accessoire:hover {
+    transform: scale(1.1);
+}
+
+.product img, .accessoire img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.product:hover img, .accessoire:hover img {
+    transform: scale(1.2);
+}
+
+.product h3, .accessoire h3 {
+    margin: 10px 0;
+    font-size: 0.9em;
+    color: #007BFF;
+}
+
+.product p, .accessoire p {
+    margin: 5px 0;
+    font-size: 0.8em;
+    color: #555;
+}
+
+.price {
+    font-weight: bold;
+    font-size: 0.9em;
+    color: #28a745;
+}
+
+.whatsapp-button {
+    background-color: #28a745;
+    color: #fff;
+    padding: 6px 10px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 0.8em;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.whatsapp-button:hover {
+    background-color: #218838;
+}
+
+footer {
+    background-color: #007BFF;
+    color: #fff;
+    text-align: center;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+footer a {
+    color: #fff;
+    text-decoration: underline;
+}
+
+/* Styles pour la barre latérale de connexion */
+.login-sidebar {
+    height: 100%;
+    width: 300px;
+    position: fixed;
+    top: 0;
+    left: -300px; /* Cachée par défaut */
+    background-color: #007BFF;
+    overflow-x: hidden;
+    transition: left 0.3s ease;
+    padding-top: 60px;
+    z-index: 1000;
+}
+
+.login-sidebar.open {
+    left: 0; /* Afficher la barre latérale */
+}
+
+.login-form {
+    padding: 20px;
+    color: #fff;
+}
+
+.login-form h2 {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.login-form .form-group {
+    margin-bottom: 15px;
+}
+
+.login-form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.login-form input {
+    width: 80%; /* Réduire la largeur des champs de saisie */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+    margin: 0 auto; /* Centrer les champs de saisie */
+    display: block; /* Assurer que les champs sont centrés */
+}
+
+.login-form .submit-button {
+    width: 80%; /* Réduire la largeur du bouton de soumission */
+    padding: 10px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 0 auto; /* Centrer le bouton */
+    display: block; /* Assurer que le bouton est centré */
+}
+
+.login-form .submit-button:hover {
+    background-color: #218838;
+}

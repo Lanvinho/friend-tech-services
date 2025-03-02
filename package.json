@@ -2,10 +2,10 @@
   "name": "votre-projet",
   "version": "0.0.0",
   "scripts": {
-    "build": "vite build",
+  "build": "npx vite build",
     "start": "vite preview --port 10000"
   },
   "dependencies": {
-    "vite": "^4.5.9"
+    "vite": "^6.2.0"
   }
 }
