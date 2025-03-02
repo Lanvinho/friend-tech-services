@@ -2,7 +2,7 @@
   "name": "votre-projet",
   "version": "0.0.0",
   "scripts": {
-  "build": "npx vite build",
+    "build": "npx vite build",
     "start": "vite preview --port 10000"
   },
   "dependencies": {
